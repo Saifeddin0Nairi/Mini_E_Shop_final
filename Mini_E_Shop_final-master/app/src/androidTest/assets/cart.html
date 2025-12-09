@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Điện tử Văn Mạnh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen bg-gradient-to-b from-green-50 to-white pb-32">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-6">
+            <div class="max-w-md mx-auto">
+                <div class="flex items-center gap-3 mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <h1 class="text-2xl font-bold">Giỏ hàng của bạn</h1>
+                </div>
+                <p id="cartCount" class="text-green-100">0 sản phẩm trong giỏ hàng</p>
+            </div>
+        </div>
+
+        <div class="max-w-md mx-auto px-4 py-6">
+            <!-- Cart Items -->
+            <div id="cartItems" class="space-y-4 mb-6"></div>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <h2 class="text-xl font-bold mb-2 text-gray-700">Giỏ hàng của bạn đang trống</h2>
+                <p class="text-gray-500 text-sm">
+                    Thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm
+                </p>
+            </div>
+        </div>
+
+        <!-- Order Summary - Fixed at Bottom -->
+        <div id="orderSummary" class="hidden fixed bottom-20 left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
+            <div class="max-w-md mx-auto px-4 py-4">
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Tạm tính</span>
+                        <span id="subtotal">0đ</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Phí vận chuyển</span>
+                        <span id="shipping">0đ</span>
+                    </div>
+                    <div class="flex justify-between pt-2 border-t border-gray-200 font-bold">
+                        <span>Tổng cộng</span>
+                        <span id="total" class="text-lg text-blue-600">0đ</span>
+                    </div>
+                </div>
+
+                <button onclick="checkout()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl transition-colors font-semibold">
+                    Thanh toán
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="max-w-md mx-auto flex items-center justify-around px-4 py-3">
+            <a href="home.html" class="flex flex-col items-center gap-1 text-gray-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="text-xs">Trang chủ</span>
+            </a>
+            <a href="favorites.html" class="flex flex-col items-center gap-1 text-gray-500 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="text-xs">Yêu thích</span>
+                <span id="favBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-green-600 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span class="text-xs">Giỏ hàng</span>
+                <span id="cartBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-xs">Cá nhân</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="products-data.js"></script>
+    <script>
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('favorites') || '[]');
+        }
+
+        function getCart() {
+            return JSON.parse(localStorage.getItem('cart') || '{}');
+        }
+
+        function updateCartQuantity(id, quantity) {
+            const cart = getCart();
+            if (quantity <= 0) {
+                delete cart[id];
+            } else {
+                cart[id] = quantity;
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateBadges();
+        }
+
+        function removeFromCart(id) {
+            const cart = getCart();
+            delete cart[id];
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+            updateBadges();
+        }
+
+        function updateBadges() {
+            const favorites = getFavorites();
+            const cart = getCart();
+            const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+
+            const favBadge = document.getElementById('favBadge');
+            const cartBadge = document.getElementById('cartBadge');
+            const cartCountText = document.getElementById('cartCount');
+
+            cartCountText.textContent = `${cartCount} sản phẩm trong giỏ hàng`;
+
+            if (favorites.length > 0) {
+                favBadge.classList.remove('hidden');
+                favBadge.textContent = favorites.length;
+            } else {
+                favBadge.classList.add('hidden');
+            }
+
+            if (cartCount > 0) {
+                cartBadge.classList.remove('hidden');
+                cartBadge.textContent = cartCount;
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+        }
+
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + 'đ';
+        }
+
+        function checkout() {
+            alert('Chức năng thanh toán sẽ được triển khai sau!');
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const cartItemsContainer = document.getElementById('cartItems');
+            const emptyState = document.getElementById('emptyState');
+            const orderSummary = document.getElementById('orderSummary');
+
+            const cartItems = Object.entries(cart).map(([productId, quantity]) => {
+                const product = products.find(p => p.id == productId);
+                return product ? { product, quantity } : null;
+            }).filter(Boolean);
+
+            if (cartItems.length === 0) {
+                cartItemsContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                orderSummary.classList.add('hidden');
+                return;
+            }
+
+            cartItemsContainer.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            orderSummary.classList.remove('hidden');
+
+            // Render cart items
+            cartItemsContainer.innerHTML = cartItems.map(({ product, quantity }) => `
+                <div class="bg-white rounded-xl shadow-sm p-4">
+                    <div class="flex gap-4">
+                        <div class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" />
+                        </div>
+
+                        <div class="flex-1 min-w-0">
+                            <h3 class="text-sm font-semibold mb-1 line-clamp-2">${product.name}</h3>
+                            <p class="text-sm text-gray-500 mb-2">${product.brand}</p>
+                            <p class="text-lg font-bold text-blue-600">${formatPrice(product.price)}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateCartQuantity(${product.id}, ${quantity - 1})" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                                </svg>
+                            </button>
+                            <span class="w-8 text-center font-semibold">${quantity}</span>
+                            <button onclick="updateCartQuantity(${product.id}, ${quantity + 1})" ${quantity >= product.stock ? 'disabled' : ''} class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <button onclick="removeFromCart(${product.id})" class="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Calculate totals
+            const subtotal = cartItems.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0);
+            const shipping = 30000;
+            const total = subtotal + shipping;
+
+            document.getElementById('subtotal').textContent = formatPrice(subtotal);
+            document.getElementById('shipping').textContent = formatPrice(shipping);
+            document.getElementById('total').textContent = formatPrice(total);
+        }
+
+        // Initialize
+        renderCart();
+        updateBadges();
+    </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "15734219964",
+    "project_id": "saif-9578d",
+    "storage_bucket": "saif-9578d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15734219964:android:6882284025a2fb4e24dcb9",
+        "android_client_info": {
+          "package_name": "com.example.mini_e_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAf3RxXabBOKAfE7sM2m_xC58RRlY69c5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

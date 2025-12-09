@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ - Điện tử Văn Mạnh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen pb-20">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 pt-6 pb-8">
+            <div class="max-w-md mx-auto">
+                <h1 class="text-2xl font-bold mb-4">Điện tử Văn Mạnh</h1>
+                
+                <!-- Search Bar -->
+                <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Tìm kiếm sản phẩm..."
+                        class="w-full pl-10 pr-4 py-3 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-md mx-auto px-4 -mt-4">
+            <!-- Category Pills -->
+            <div id="categoryContainer" class="flex gap-2 overflow-x-auto pb-4 scrollbar-hide"></div>
+
+            <!-- Sort and Filter -->
+            <div class="flex items-center justify-between mb-4">
+                <p id="productCount" class="text-gray-600">0 sản phẩm</p>
+                <div class="relative">
+                    <button id="sortButton" class="flex items-center gap-2 px-4 py-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+                        </svg>
+                        <span class="text-sm">Sắp xếp</span>
+                    </button>
+                    
+                    <div id="sortMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
+                        <button class="sort-option w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-blue-600" data-value="default">Mặc định</button>
+                        <button class="sort-option w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700" data-value="price-asc">Giá tăng dần</button>
+                        <button class="sort-option w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700" data-value="price-desc">Giá giảm dần</button>
+                        <button class="sort-option w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700" data-value="name-asc">Tên A-Z</button>
+                        <button class="sort-option w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700" data-value="name-desc">Tên Z-A</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div id="productGrid" class="grid grid-cols-2 gap-4 pb-4"></div>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <p class="text-gray-500">Không tìm thấy sản phẩm nào</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="max-w-md mx-auto flex items-center justify-around px-4 py-3">
+            <a href="home.html" class="flex flex-col items-center gap-1 text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="text-xs">Trang chủ</span>
+            </a>
+            <a href="favorites.html" class="flex flex-col items-center gap-1 text-gray-500 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                <span class="text-xs">Yêu thích</span>
+                <span id="favBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+            </a>
+            <a href="cart.html" class="flex flex-col items-center gap-1 text-gray-500 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span class="text-xs">Giỏ hàng</span>
+                <span id="cartBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center gap-1 text-gray-500">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span class="text-xs">Cá nhân</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="products-data.js"></script>
+    <script>
+        // State management
+        let selectedCategory = 'Tất cả';
+        let sortBy = 'default';
+        let searchQuery = '';
+        
+        const categories = ['Tất cả', 'Điện thoại', 'Laptop', 'Tai nghe', 'Máy tính bảng', 'Đồng hồ', 'Camera', 'Gaming', 'Màn hình', 'Phụ kiện'];
+
+        // LocalStorage helpers
+        function getFavorites() {
+            return JSON.parse(localStorage.getItem('favorites') || '[]');
+        }
+
+        function toggleFavorite(id) {
+            const favorites = getFavorites();
+            const index = favorites.indexOf(id);
+            if (index > -1) {
+                favorites.splice(index, 1);
+            } else {
+                favorites.push(id);
+            }
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateBadges();
+            renderProducts();
+        }
+
+        function getCart() {
+            return JSON.parse(localStorage.getItem('cart') || '{}');
+        }
+
+        function addToCart(id) {
+            const cart = getCart();
+            cart[id] = (cart[id] || 0) + 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateBadges();
+            alert('Đã thêm vào giỏ hàng!');
+        }
+
+        function updateBadges() {
+            const favorites = getFavorites();
+            const cart = getCart();
+            const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+
+            const favBadge = document.getElementById('favBadge');
+            const cartBadge = document.getElementById('cartBadge');
+
+            if (favorites.length > 0) {
+                favBadge.classList.remove('hidden');
+                favBadge.textContent = favorites.length;
+            } else {
+                favBadge.classList.add('hidden');
+            }
+
+            if (cartCount > 0) {
+                cartBadge.classList.remove('hidden');
+                cartBadge.textContent = cartCount;
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+        }
+
+        function formatPrice(price) {
+            return price.toLocaleString('vi-VN') + 'đ';
+        }
+
+        function getFilteredAndSortedProducts() {
+            let filtered = [...products];
+
+            if (searchQuery) {
+                filtered = filtered.filter(p => 
+                    p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    p.brand.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            if (selectedCategory !== 'Tất cả') {
+                filtered = filtered.filter(p => p.category === selectedCategory);
+            }
+
+            switch (sortBy) {
+                case 'price-asc':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name-asc':
+                    filtered.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+                    break;
+                case 'name-desc':
+                    filtered.sort((a, b) => b.name.localeCompare(a.name, 'vi'));
+                    break;
+            }
+
+            return filtered;
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoryContainer');
+            container.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="selectCategory('${cat}')"
+                    class="px-4 py-2 rounded-full whitespace-nowrap transition-all ${
+                        selectedCategory === cat
+                            ? 'bg-blue-600 text-white shadow-md'
+                            : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }"
+                >
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function renderProducts() {
+            const favorites = getFavorites();
+            const filteredProducts = getFilteredAndSortedProducts();
+            const grid = document.getElementById('productGrid');
+            const emptyState = document.getElementById('emptyState');
+            const productCount = document.getElementById('productCount');
+
+            productCount.textContent = `${filteredProducts.length} sản phẩm`;
+
+            if (filteredProducts.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            grid.innerHTML = filteredProducts.map(product => {
+                const isFavorite = favorites.includes(product.id);
+                const discount = product.originalPrice 
+                    ? Math.round((1 - product.price / product.originalPrice) * 100)
+                    : 0;
+
+                return `
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden group">
+                        <div class="relative aspect-square bg-gray-100">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            
+                            <button onclick="toggleFavorite(${product.id})" class="absolute top-2 right-2 p-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-colors">
+                                <svg class="w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-600'}" fill="${isFavorite ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                </svg>
+                            </button>
+
+                            ${discount > 0 ? `
+                                <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-md">
+                                    <span class="text-xs font-semibold">-${discount}%</span>
+                                </div>
+                            ` : ''}
+
+                            <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-md">
+                                <span class="text-xs">Kho: ${product.stock}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-3">
+                            <div class="text-xs text-gray-500 mb-1">${product.brand}</div>
+                            <h3 class="text-sm font-semibold mb-2 line-clamp-2" style="min-height: 2.5rem">${product.name}</h3>
+                            
+                            <div class="flex items-center gap-1 mb-2">
+                                <svg class="w-3 h-3 fill-yellow-400 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span class="text-xs font-semibold">${product.rating}</span>
+                                <span class="text-xs text-gray-400">(${product.reviews})</span>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="text-lg font-bold text-blue-600">${formatPrice(product.price)}</div>
+                                ${product.originalPrice ? `
+                                    <div class="text-xs text-gray-400 line-through">${formatPrice(product.originalPrice)}</div>
+                                ` : ''}
+                            </div>
+
+                            <button onclick="addToCart(${product.id})" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                                <span class="text-sm font-semibold">Thêm vào giỏ</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(category) {
+            selectedCategory = category;
+            renderCategories();
+            renderProducts();
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderProducts();
+        });
+
+        document.getElementById('sortButton').addEventListener('click', () => {
+            document.getElementById('sortMenu').classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#sortButton') && !e.target.closest('#sortMenu')) {
+                document.getElementById('sortMenu').classList.add('hidden');
+            }
+        });
+
+        document.querySelectorAll('.sort-option').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sortBy = btn.dataset.value;
+                document.querySelectorAll('.sort-option').forEach(b => {
+                    b.classList.remove('text-blue-600');
+                    b.classList.add('text-gray-700');
+                });
+                btn.classList.remove('text-gray-700');
+                btn.classList.add('text-blue-600');
+                document.getElementById('sortMenu').classList.add('hidden');
+                renderProducts();
+            });
+        });
+
+        // Initialize
+        renderCategories();
+        renderProducts();
+        updateBadges();
+    </script>
+</body>
+</html>
